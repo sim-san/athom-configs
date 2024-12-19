@@ -4,6 +4,7 @@ substitutions:
   project_name: "athom.smart-plug-v2"
   project_version: "1.1"
   relay_restore_mode: RESTORE_DEFAULT_OFF
+  update_interval: 10s
 
 esphome:
   name: "${device_name}"
@@ -78,10 +79,10 @@ sensor:
     name: "Uptime Sensor"
 
   - platform: cse7766
-    update_interval: 10s
     current:
       name: "Current"
       filters:
+          - throttle_average: ${update_interval}
           - lambda: if (x < 0.060) return 0.0; else return x;   #For the chip will report less than 3w power when no load is connected
 
 
@@ -91,6 +92,7 @@ sensor:
       name: "Power"
       id: power_sensor
       filters:
+          - throttle_average: ${update_interval}
           - lambda: if (x < 3.0) return 0.0; else return x;    #For the chip will report less than 3w power when no load is connected
 
 
